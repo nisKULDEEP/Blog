@@ -1,6 +1,7 @@
 package com.kuldeep.blog.blog.controllers;
 import com.kuldeep.blog.blog.payloads.ApiResponse;
 import com.kuldeep.blog.blog.payloads.CategoryDto;
+import com.kuldeep.blog.blog.payloads.CategoryResponse;
 import com.kuldeep.blog.blog.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,9 +37,10 @@ public class CategoryController {
 
 
     @GetMapping("/all")
-    public ResponseEntity<List<CategoryDto>> getAllCategory() {
-        List<CategoryDto> category = this.categoryService.getAllCategory();
-        return new ResponseEntity<>(category, HttpStatus.OK);
+    public ResponseEntity<CategoryResponse> getAllCategory(@RequestParam(value = "pageNumber", defaultValue = "1", required = false) Integer pageNumber, @RequestParam(name = "pageSize", value = "5", required = false) Integer pageSize) {
+        CategoryResponse category = this.categoryService.getAllCategory(pageNumber, pageSize);
+
+        return new ResponseEntity<CategoryResponse>(category, HttpStatus.OK);
     }
 
     @DeleteMapping("/{categoryId}")

@@ -3,10 +3,15 @@ package com.kuldeep.blog.blog.services.impl;
 import com.kuldeep.blog.blog.entities.Category;
 import com.kuldeep.blog.blog.exceptions.ResourceNotFoundException;
 import com.kuldeep.blog.blog.payloads.CategoryDto;
+import com.kuldeep.blog.blog.payloads.CategoryResponse;
+import com.kuldeep.blog.blog.payloads.PostResponse;
 import com.kuldeep.blog.blog.repositories.CategoryRepo;
 import com.kuldeep.blog.blog.services.CategoryService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.ApplicationScope;
 
@@ -55,10 +60,21 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryDto> getAllCategory(){
-         List<Category> categoryList =  this.categoryRepo.findAll();
+    public CategoryResponse getAllCategory(Integer pageNumber, Integer pageSize){
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Category> page = this.categoryRepo.findAll(pageable);
+         List<Category> categoryList =  page.getContent();
         List<CategoryDto> categoryDtoList = categoryList.stream().map(e -> this.modelMapper.map(e, CategoryDto.class)).collect(Collectors.toList());
-        return categoryDtoList;
+        CategoryResponse categoryResponse = new CategoryResponse();
+        categoryResponse.setTotalElements(page.getTotalElements());
+        categoryResponse.setTotalPages(page.getTotalPages());
+        categoryResponse.setIsLastPage(page.isLast());
+        categoryResponse.setContent(categoryDtoList);
+        categoryResponse.setPageNumber(page.getNumber());
+        categoryResponse.setPageSize(page.getSize());
+
+
+        return categoryResponse;
     };
 
 

@@ -2,6 +2,7 @@ package com.kuldeep.blog.blog.services;
 
 
 import com.kuldeep.blog.blog.payloads.CategoryDto;
+import com.kuldeep.blog.blog.payloads.CategoryResponse;
 
 import java.util.List;
 
@@ -20,5 +21,5 @@ public interface CategoryService {
     public CategoryDto getCategory(Integer categoryId);
 
     //get all
-    public List<CategoryDto> getAllCategory();
+    public CategoryResponse getAllCategory(Integer pageNumber, Integer pageSize);
 }
